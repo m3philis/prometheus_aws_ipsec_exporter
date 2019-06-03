@@ -4,17 +4,17 @@ import (
   "fmt"
   "time"
 
-  "github.com/prometheus/client_golang/prometheus"
   "github.com/aws/aws-sdk-go/aws/session"
   "github.com/aws/aws-sdk-go/service/ec2"
+  "github.com/prometheus/client_golang/prometheus"
 )
 
-
 func ipsecMetrics() {
-  sess := session.Must(session.NewSessionWithOptions(session.Options{
-	   SharedConfigState: session.SharedConfigEnable,
-     Profile: "default",
-  }))
+  sess, err := session.NewSession()
+  if err != nil {
+    fmt.Println("Error", err)
+    return
+  }
 
   svc := ec2.New(sess)
 
@@ -37,20 +37,20 @@ func ipsecMetrics() {
 
         // Set state of primary tunnel
         if *connection.VgwTelemetry[0].Status == "UP" {
-          tunnelMetric1.With(prometheus.Labels{"name":name}).Set(1)
+          tunnelMetric1.With(prometheus.Labels{"name": name}).Set(1)
         } else {
-          tunnelMetric1.With(prometheus.Labels{"name":name}).Set(0)
+          tunnelMetric1.With(prometheus.Labels{"name": name}).Set(0)
         }
 
         // Set state of secondary tunnel
         if *connection.VgwTelemetry[1].Status == "UP" {
-          tunnelMetric2.With(prometheus.Labels{"name":name}).Set(1)
+          tunnelMetric2.With(prometheus.Labels{"name": name}).Set(1)
         } else {
-          tunnelMetric2.With(prometheus.Labels{"name":name}).Set(0)
+          tunnelMetric2.With(prometheus.Labels{"name": name}).Set(0)
         }
       }
 
-    time.Sleep(10 * time.Second)
+      time.Sleep(10 * time.Second)
 
     }
   }()
