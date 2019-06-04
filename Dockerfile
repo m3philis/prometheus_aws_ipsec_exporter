@@ -1,4 +1,4 @@
-FROM golang:1.12 as base
+FROM golang:alpine as base
 
 ENV GO111MODULE on
 
@@ -8,7 +8,7 @@ COPY . .
 
 RUN go install
 
-FROM golang:1.12 as runner
+FROM golang:alpine as runner
 
 COPY --from=base /go/bin/prometheus_aws-ipsec_exporter /go/bin/ipsec_exporter
 
