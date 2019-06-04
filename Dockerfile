@@ -1,12 +1,12 @@
 FROM golang:alpine as base
 
-ENV GO111MODULE on
+ENV GO111MODULE on  
 
 WORKDIR /go/src/github.com/m3philis/prometheus_aws-ipsec_exporter
 
 COPY . .
 
-RUN go install
+RUN apk update && apk add git && go install
 
 FROM golang:alpine as runner
 
