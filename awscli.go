@@ -4,18 +4,17 @@ import (
   "fmt"
   "time"
 
+  "github.com/aws/aws-sdk-go/aws"
   "github.com/aws/aws-sdk-go/aws/session"
   "github.com/aws/aws-sdk-go/service/ec2"
   "github.com/prometheus/client_golang/prometheus"
 )
 
 func ipsecMetrics() {
-  sess, err := session.NewSession()
-  if err != nil {
-    fmt.Println("Error", err)
-    return
-  }
-
+  // create a session to AWS with a set region
+  sess := session.Must(session.NewSession(&aws.Config{
+    Region: aws.String("eu-west-1"),
+  }))
   svc := ec2.New(sess)
 
   // inner function as go function to run endlessly but don't block the exporter itself
