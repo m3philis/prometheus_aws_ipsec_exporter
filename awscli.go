@@ -23,7 +23,7 @@ func ipsecMetrics() {
   svcCfn := cloudformation.New(sess)
   stacks, err := svcCfn.DescribeStacks(nil)
   if err != nil {
-    fmt.Println("Error", err)
+    fmt.Println(err.Error())
   }
 
   // loop over all stacks to find the base-region stack and get the AccountName
@@ -44,7 +44,7 @@ func ipsecMetrics() {
     for {
       result, err := svcEc2.DescribeVpnConnections(nil)
       if err != nil {
-        fmt.Println("Error", err)
+        fmt.Println(err.Error())
         return
       }
 
